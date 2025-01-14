@@ -39,6 +39,167 @@ class Main {
             rev=rev+a[i];
             System.out.println(a[i]); //printing array
         }
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+JsonSchemaValidator
+
+RestAssured.baseURI("");
+
+String Response = RestAssured.given().log().all().header().body()
+.when().post("resouce")
+.then().aseertThat().log().all().statuscode(200)
+.extract().response().asstring()
+.body("courses[0]",equalsTo("java"))
+.body("courses[1]",equalsTo("C") )
+.body("name", equalsTo("scot")).log().all()
+.header("Content-Type","application/json; charset-utf-8").log().all()                             //header("key","value; actualheadervalue")
+;
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+
+
+The body response looks like:
+
+[
+  {
+    "userId": 123,
+    "username": "sysadmin",
+    "roles": [
+      "ROLE_OPERATOR",
+      "ROLE_ADMIN"
+    ]
+  }
+]
+I want to assert the roles array contains at least "ROLE_ADMIN". So I wrote this test:
+
+RestAssured.given(...).get(...)
+  .then()
+    .statusCode(200)
+  .and()
+    .body("roles", hasItem("ROLE_ADMIN"));
+	
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++	
+	
+	
+	@Test
+public void givenMovieId_whenMakingGetRequestToMovieEndpoint_thenReturnMovie() {
+
+    Movie testMovie = new Movie(1, "movie1", "summary1");
+    when(appService.findMovie(1)).thenReturn(testMovie);
+
+    get(uri + "/movie/" + testMovie.getId()).then()
+      .assertThat()
+      .statusCode(HttpStatus.OK.value())
+      .body("id", equalTo(testMovie.getId()))
+      .body("name", equalTo(testMovie.getName()))
+      .body("synopsis", notNullValue());
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+We can also extract the whole response to a String, using the extract().asString() API:
+
+String responseString = get(uri + "/movie/" + testMovie.getId()).then()
+  .assertThat()
+  .statusCode(HttpStatus.OK.value())
+  .extract()
+  .asString();
+assertThat(responseString).isNotEmpty();
+Copy
+Finally, we can extract a particular field out of the response JSON as well.
+
+Let’s look at a test for a POST API that expects a Movie JSON body and will return the same if inserted successfully:
+
+@Test
+public void givenMovie_whenMakingPostRequestToMovieEndpoint_thenCorrect() {
+    Map<String, String> request = new HashMap<>();
+    request.put("id", "11");
+    request.put("name", "movie1");
+    request.put("synopsis", "summary1");
+
+    int movieId = given().contentType("application/json")
+      .body(request)
+      .when()
+      .post(uri + "/movie")
+      .then()
+      .assertThat()
+      .statusCode(HttpStatus.CREATED.value())
+      .extract()
+      .path("id");
+    assertThat(movieId).isEqualTo(11);
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++	
+
+3.3. JSON Array
+We can also verify the response if it’s a JSON array:
+
+@Test
+public void whenCallingMoviesEndpoint_thenReturnAllMovies() {
+
+Set<Movie> movieSet = new HashSet<>();
+movieSet.add(new Movie(1, "movie1", "summary1"));
+movieSet.add(new Movie(2, "movie2", "summary2"));
+when(appService.getAll()).thenReturn(movieSet);
+
+get(uri + "/movies").then()
+    .statusCode(HttpStatus.OK.value())
+    .assertThat()
+    .body("size()", is(2));
+}
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+4. Validating Headers and Cookies
+We can verify a header or cookie of the response using methods with the same name:
+
+@Test
+public void whenCallingWelcomeEndpoint_thenCorrect() {
+    get(uri + "/welcome").then()
+        .assertThat()
+        .header("sessionId", notNullValue())
+        .cookie("token", notNullValue());
+}
+Copy
+We can also extract the headers and cookies individually:
+
+Response response = get(uri + "/welcome");
+
+String headerName = response.getHeader("sessionId");
+String cookieValue = response.getCookie("token");
+assertThat(headerName).isNotBlank();
+assertThat(cookieValue).isNotBlank();
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+validate nested array
+"token":"123456";
+"data":{
+
+"user":[
+       {"id":1,"name":"john"},
+	   {"id":2,"name":"Hani"}   
+]
+}
+.then
+.body("data.user[0].id", equalsTo(1))
+.body("data.user[0].name" ,equalsTo("john"))
+
+.body("token", notNullValue());
+
+TestNG
+Assert.assertEquals("data.user[0].name","john");
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+	
+
+
+
+
+
+
+
+
+ 
         
         
         System.out.println(rev);// printing reverse char array
