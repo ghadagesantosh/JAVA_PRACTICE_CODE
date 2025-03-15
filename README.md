@@ -377,8 +377,67 @@ LinkedHashMap<Character, Integer> map = new LinkedHashMap<Character, Integer>();
                 map.put(c, n+1);
             }
      }
+
+     
         System.out.println(map);
     }
+}
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Handling WebTable
+
+int totalrows= driver.findElements(By.xpath("//table[@class='tablename']//tbody//tr")).size();
+int totalcols= driver.findElements(By.xpath("//table[@class='tablename']//tbody//td")).size();
+
+for(int i=1;i<=totalrows; i++)
+{
+for(int j=1;j<=totalcols; j++)
+{
+String Tabledata= driver.findElement(By.xpath(By.xpath("//table[@class='tablename']//tbody//tr["+i+"]/td["+j+"])).getText();
+
+}
+
+System.out.println(Tabledata);
+
+}
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Handling Dynamic WebTable
+
+String text = driver.findElement(By.xpath("//div[contains(text(),"pages")]")).getText();
+
+
+int totalPages= text.substring(text.indexOf("(")+1, text.indexOf("pages")-1);
+
+//Integer.parseInt - Convert String value in to Integer
+
+int totalPages= Integer.parseInt(text.substring(text.indexOf("(")+1, text.indexOf("pages")-1));
+
+//Repeating pages
+
+for(int p=1; p<=totalPages; p++)
+{
+if(p>1)
+{
+WebElement activepage = driver.findElement(By.xpth("//ul[@class='pagination']"))//*[text()="+p+"]);
+
+activepage.click();
+Thread.sleep(3000);
+}
+
+//Reading data from Table
+
+int totalrows= driver.findElements(By.xpath("//table[@class='tablename']//tbody//tr")).size();
+
+for(int i=1;i<=totalrows; i++)
+{
+
+driver.findElement(By.xpath(By.xpath("//table[@class='tablename']//tbody//tr["+i+"]/td[3])).getText();
+
+
+}
+
+
 }
 
 
