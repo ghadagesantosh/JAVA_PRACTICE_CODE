@@ -437,6 +437,34 @@ driver.findElement(By.xpath(By.xpath("//table[@class='tablename']//tbody//tr["+i
 
 }
 
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+packages4
+
+1- Base Test
+class1
+we have created base class in we intialise our webdriver browser/Restassured.
+
+2- POM
+class1- Login page, bankslink - login ID and Password.
+class2- Txn Seach page
+class3 - Initialize the driver.
+
+3- Utility- @Data Provider utility, and extend report utility.
+
+4-Test Cases- Based on requirement we will create test case classes.
+
+5- Resouce folder - Log4j for logging mechanism, config property - values for Login page teller id and passord.
+
+6- Project is maven based so we have added all dependencies in pom.xml.
+
+7- Screenshots folder- for failure test cases.
+
+8- Report folder - extend report generation.
+
+9- TestNG.xml file - for parallel test cases run, and grouping the test cases.
+
 
 }
 
